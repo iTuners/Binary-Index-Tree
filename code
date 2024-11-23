@@ -1,0 +1,42 @@
+#include<iostream>
+#include<cstring>
+using namespace std;
+const int maxn = 1e5+10,inf=0x3f3f3f3f;
+int m, n, a[maxn], tree[maxn], l, r;
+int lowbit(int k) {
+	return k & -k;
+}
+void make(int k, int v) {
+	while (k <= m) {
+		if (tree[k] > v)
+			tree[k] = v;
+		else return;
+		k += lowbit(k);
+	}
+}
+int gm(int l, int r) {
+	int re = inf, now = r;
+	while (now >= l) {
+		if (now - lowbit(now) >= l) {
+			re = min(re, tree[now]);
+			now -= lowbit(now);
+		}
+		else {
+			re = min(re, a[now]);
+			now--;
+		}
+	}
+	return re;
+}
+int main() {
+	cin >> m >> n;
+	memset(tree, 127, sizeof(tree));
+	for (int i = 1; i <= m; i++) {
+		cin >> a[i];
+		make(i, a[i]);
+	}
+	for (int i = 0; i < n; i++) {
+		cin >> l >> r;
+		cout << gm(l, r)<<" ";
+	}
+}
